@@ -1,0 +1,22 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true // import文の順番を自動ソート
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "python.analysis.completeFunctionParens": true,
+    "python.languageServer": "Pylance",
+    "python.analysis.extraPaths": ["/workspaces/llm2"],
+    "flake8.args": [
+        "--max-line-length=119", //GitHubのコードレビュー画面サイズに変更
+        "--ignore=E203", //前後にスペースがあるとエラー
+        "--ignore=W503" //前に演算子があるとエラー
+    ],
+    "black-formatter.args": [
+        "--line-length=119"
+    ],
+    "editor.suggest.showMethods": true,
+    "editor.suggest.preview": true,
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.snippetSuggestions": "top"
+}
