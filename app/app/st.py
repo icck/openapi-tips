@@ -2,10 +2,28 @@ import os
 
 import streamlit as st
 from dotenv import load_dotenv
+from langchain.agents import AgentType, initialize_agent, load_tools
+from langchain.callbacks import StreamlitCallbackHandler
 from langchain.chat_models import ChatOpenAI
-from langchain.schema import HumanMessage
 
 load_dotenv()
+
+
+def create_agent_chain():
+    chat = ChatOpenAI(
+        model_name=os.environ.get("OPENAI_API_MODEL"),
+        api_key=os.environ.get("OPENAI_API_KEY"),
+        temperature=os.environ.get("OPENAPI_API_TEMPERATURE"),
+        streaming=True,
+    )
+
+    tools = load_tools(["ddg-search", "wikipedia"])
+    return initialize_agent(
+        tools,
+        chat,
+        agent=AgentType.OPENAI_FUNCTIONS,
+    )
+
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -26,15 +44,11 @@ if prompt:
     with st.chat_message("user"):
         st.markdown(prompt)
     with st.chat_message("assistant"):
-        chat = ChatOpenAI(
-            model_name=os.environ.get("OPENAI_API_MODEL"),
-            api_key=os.environ.get("OPENAI_API_KEY"),
-            temperature=os.environ.get("OPENAPI_API_TEMPERATURE"),
-        )
-        messages = [HumanMessage(content=prompt)]
+        callback = StreamlitCallbackHandler(st.container())
+        agent_chain = create_agent_chain()
 
-        response = chat(messages)
-        st.markdown(response.content)
+        response = agent_chain.run(prompt, callbacks=[callback])
+        st.markdown(response)
 
     # add response to session state
-    st.session_state.messages.append({"role": "assistant", "content": response.content})
+    st.session_state.messages.append({"role": "assistant", "content": response})

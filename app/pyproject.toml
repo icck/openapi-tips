@@ -12,6 +12,8 @@ langchain = "^0.0.340"
 pydantic = "^2.5.2"
 python-dotenv = "^1.0.0"
 streamlit = "^1.29.0"
+duckduckgo-search = "^3.9.9"
+wikipedia = "^1.4.0"
 
 
 [build-system]
